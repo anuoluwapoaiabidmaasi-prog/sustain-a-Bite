@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sustain a Bite</title>
+  <link rel="stylesheet" href="index.css">
+  <link rel="shortcut icon" href="/images/imgi_4_d4a06fea-fb08-4eff-92a0-04986db460d3.png" type="image/x-icon">
+  <style>
+     </style>
+</head>
+<body>
+
+  <div class="bg-orb bg-orb-1"></div>
+  <div class="bg-orb bg-orb-2"></div>
+
+  <!-- Route Inputs -->
+  <input type="radio" id="nav-home" name="page-route" checked>
+  <input type="radio" id="nav-recipes" name="page-route">
+  <input type="radio" id="nav-spices" name="page-route">
+  <input type="radio" id="nav-sdg" name="page-route">
+
+  <!-- Dual Search Mode Inputs -->
+  <input type="radio" id="mode-offline" name="mode-toggle" checked>
+  <input type="radio" id="mode-online" name="mode-toggle">
+
+  <!-- Offline Quick Filter Inputs -->
+  <input type="radio" id="filter-all" name="search-filter" checked>
+  <input type="radio" id="filter-spinach" name="search-filter">
+  <input type="radio" id="filter-tomato" name="search-filter">
+  <input type="radio" id="filter-chicken" name="search-filter">
+  <input type="radio" id="filter-cumin" name="search-filter">
+
+  <!-- HEADER -->
+  <header>
+    <div class="container nav-container">
+      <label for="nav-home" class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+        </div>
+        <span>Sustain a<span class="gradient-text-red"> Bite</span></span>
+      </label>
+
+      <nav class="nav-links">
+        <label for="nav-home" class="nav-btn">Home &amp; Search</label>
+        <label for="nav-recipes" class="nav-btn">Offline Recipes</label>
+        <label for="nav-spices" class="nav-btn">Spice Varieties</label>
+        <label for="nav-sdg" class="nav-btn">SDG 12 Impact</label>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="container">
+
+    <!-- ----------------------------------------------------------------------
+       SECTION 1: HOME & ONLINE/OFFLINE SEARCH
+       ---------------------------------------------------------------------- -->
+    <section id="section-home" class="page-section">
+      <div class="hero-wrapper">
+        <div class="badge">UN SDG Goal 12: Zero-Waste Kitchen</div>
+        <h1 style="font-size: 3rem; font-weight: 800; margin-top: 1rem; line-height: 1.2;">
+          Zero-Waste <span class="gradient-text-red">Recipe &amp; Spice Hub</span>
+        </h1>
+        <p style="color: var(--text-sub); font-size: 1.15rem; margin-top: 0.75rem;">
+          Switch between <strong>Offline Mode</strong> for instant local recipes or <strong>Online Mode</strong> to search Google directly!
+        </p>
+
+        <!-- Mode Switcher Tabs -->
+        <div class="mode-switcher">
+          <label for="mode-offline" class="mode-btn">⚡ Offline Mode (Local)</label>
+          <label for="mode-online" class="mode-btn">🌐 Online Mode (Google)</label>
+        </div>
+
+        <!-- ONLINE SEARCH BOX (Directs to Google in New Tab) -->
+        <div class="search-box-online">
+          <form action="https://www.google.com/search" method="GET" target="_blank" class="search-form">
+            <input type="text" name="q" class="search-input" placeholder="Search Google for recipes/spices (e.g., spinach curry recipe)..." required>
+            <button type="submit" class="search-btn">🌐 Google Search ↗</button>
+          </form>
+          <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.75rem;">
+            Opens Google search results in a new tab so you can easily navigate back to SustainaBite.
+          </div>
+        </div>
+
+        <!-- OFFLINE SEARCH BOX (Filters Built-in Cards) -->
+        <div class="search-box-offline">
+          <div class="quick-chips">
+            <label for="filter-all" class="chip-btn">All Offline Items</label>
+            <label for="filter-spinach" class="chip-btn">🥬 Spinach</label>
+            <label for="filter-tomato" class="chip-btn">🍅 Soft Tomato</label>
+            <label for="filter-chicken" class="chip-btn">🍗 Chicken</label>
+            <label for="filter-cumin" class="chip-btn">🌿 Cumin Spice</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAIN CATALOG GRID -->
+      <div class="catalog-grid">
+
+        <!-- Recipe Card 1 -->
+        <div class="glass-card card-item" data-tags="spinach tomato">
+          <div class="card-img-wrapper">
+            <img src="images/imgi_1_photo-1540420773420-3366772f4999.png" class="card-img" alt="Salad">
+            <div class="sdg-tag">SDG 12.3 Impact</div>
+          </div>
+          <div class="card-body">
+            <div>
+              <div class="card-title">Wilted Spinach & Tomato Salad</div>
+              <p class="card-desc">Sauté expiring soft spinach and bruised tomatoes into a warm herb salad.</p>
+              <div class="sdg-impact-box">
+                🌱 <strong>SDG Impact:</strong> Prevents 400g of household food waste.
+              </div>
+            </div>
+            <a href="https://www.google.com/search?q=wilted+spinach+and+tomato+salad+recipe" target="_blank" class="google-btn">
+              Search Google Variations ↗
+            </a>
+          </div>
+        </div>
+
+        <!-- Recipe Card 2 -->
+        <div class="glass-card card-item" data-tags="tomato cumin">
+          <div class="card-img-wrapper">
+            <img src="images/imgi_2_photo-1546833999-b9f581a1996d.png" class="card-img" alt="Curry">
+            <div class="sdg-tag">SDG 12.3 Impact</div>
+          </div>
+          <div class="card-body">
+            <div>
+              <div class="card-title">Aromatic Cumin & Tomato Curry</div>
+              <p class="card-desc">Simmer overripe tomatoes with whole cumin seeds for a thick curry base.</p>
+              <div class="sdg-impact-box">
+                🌱 <strong>SDG Impact:</strong> Prevents 550g of kitchen food waste.
+              </div>
+            </div>
+            <a href="https://www.google.com/search?q=cumin+and+tomato+curry+recipe" target="_blank" class="google-btn">
+              Search Google Variations ↗
+            </a>
+          </div>
+        </div>
+
+        <!-- Recipe Card 3 -->
+        <div class="glass-card card-item" data-tags="chicken cumin">
+          <div class="card-img-wrapper">
+            <img src="images/imgi_3_photo-1565299585323-38d6b0865b47.png" class="card-img" alt="Tacos">
+            <div class="sdg-tag">SDG 12.3 Impact</div>
+          </div>
+          <div class="card-body">
+            <div>
+              <div class="card-title">Shredded Chicken Cumin Tacos</div>
+              <p class="card-desc">Reheat leftover chicken with chili powder and fresh herbs in 15 minutes.</p>
+              <div class="sdg-impact-box">
+                🌱 <strong>SDG Impact:</strong> Prevents 350g of protein waste.
+              </div>
+            </div>
+            <a href="https://www.google.com/search?q=leftover+shredded+chicken+taco+recipe" target="_blank" class="google-btn">
+              Search Google Variations ↗
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------------------------
+       SECTION 2: OFFLINE RECIPES
+       ---------------------------------------------------------------------- -->
+    <section id="section-recipes" class="page-section">
+      <div style="text-align: center; margin-bottom: 3rem;">
+        <h2 style="font-size: 2.5rem; font-weight: 800;">Offline Recipe Collection</h2>
+        <p style="color: var(--text-sub);">Always available without an active internet connection.</p>
+      </div>
+
+      <div class="catalog-grid">
+        <div class="glass-card card-item">
+          <div class="card-img-wrapper">
+            <img src="https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80" class="card-img" alt="Food">
+            <div class="sdg-tag">SDG 12 Impact</div>
+          </div>
+          <div class="card-body">
+            <div class="card-title">Garlic & Herb Stale Bread Croutons</div>
+            <p class="card-desc">Bake day-old bread with olive oil and paprika for crunchy salad toppings.</p>
+            <div class="sdg-impact-box">🌱 Saves 300g bread waste.</div>
+          </div>
+        </div>
+
+        <div class="glass-card card-item">
+          <div class="card-img-wrapper">
+            <img src="https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=600&q=80" class="card-img" alt="Food">
+            <div class="sdg-tag">SDG 12 Impact</div>
+          </div>
+          <div class="card-body">
+            <div class="card-title">Spiced Lentil & Vegetable Stew</div>
+            <p class="card-desc">Combine leftover carrots and potato skins into a rich lentil soup.</p>
+            <div class="sdg-impact-box">🌱 Saves 500g vegetable waste.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------------------------
+       SECTION 3: SPICE VARIETIES
+       ---------------------------------------------------------------------- -->
+    <section id="section-spices" class="page-section">
+      <div style="text-align: center; max-width: 700px; margin: 0 auto 3rem auto;">
+        <h2 style="font-size: 2.5rem; font-weight: 800;">Varieties of <span class="ret">Spices</span> </h2>
+        <p style="color: var(--text-sub);">Spices naturally preserve food and turn leftover items into culinary delights.</p>
+      </div>
+
+      <div class="spice-grid">
+        <div class="glass-card spice-card">
+          <div class="spice-avatar">🌶️</div>
+          <h3>Cayenne &amp; Chili</h3>
+          <p style="color: var(--text-sub); font-size: 0.9rem; margin-top: 0.5rem;">Natural preservation properties that revive leftover meats.</p>
+        </div>
+
+        <div class="glass-card spice-card">
+          <div class="spice-avatar" style="border-color: var(--green-bright);">🌿</div>
+          <h3>Cumin &amp; Coriander</h3>
+          <p style="color: var(--text-sub); font-size: 0.9rem; margin-top: 0.5rem;">Earthy aroma that transforms wilted greens into fragrant side dishes.</p>
+        </div>
+
+        <div class="glass-card spice-card">
+          <div class="spice-avatar" style="border-color: var(--blue-main);">🧄</div>
+          <h3>Garlic &amp; Paprika</h3>
+          <p style="color: var(--text-sub); font-size: 0.9rem; margin-top: 0.5rem;">Savory essential base for seasoning roasted leftover vegetables.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------------------------
+       SECTION 4: SDG 12 IMPACT DETAILS
+       ---------------------------------------------------------------------- -->
+    <section id="section-sdg" class="page-section">
+      <div class="sdg-split">
+        <div>
+          <div class="badge badge-sdg" style="margin-bottom: 1rem;">Targeting UN SDG Goal 12</div>
+          <h2 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem;">Responsible Consumption</h2>
+          <p style="color: var(--text-sub); margin-bottom: 1rem;">
+            SDG Target 12.3 aims to halve global household food waste by 2030.
+          </p>
+          <p style="color: var(--text-sub);">
+            SustainaBite connects users with instant zero-waste recipes both online and offline to eliminate kitchen waste.
+          </p>
+        </div>
+
+        <div class="glass-card sdg-card-large">
+          <div class="sdg-num">12</div>
+          <h3 style="margin: 0.5rem 0 1rem 0;">Responsible Production &amp; Consumption</h3>
+          <p style="color: var(--text-sub); font-size: 0.95rem;">
+            Prevent household food waste through accessible recipe search and spice awareness.
+          </p>
+        </div>
+      </div>
+
+      <!-- Accordion FAQs -->
+      <div class="accordion-list">
+        <input type="checkbox" id="acc-1" class="acc-toggle">
+        <div class="glass-card">
+          <label for="acc-1" class="acc-header">
+            <span>How does the Offline &amp; Online mode work?</span>
+            <span>↓</span>
+          </label>
+          <div class="acc-body">
+            Offline mode works locally in your browser using built-in recipe cards. Online mode lets you search Google directly in a new tab.
+          </div>
+        </div>
+
+        <input type="checkbox" id="acc-2" class="acc-toggle">
+        <div class="glass-card">
+          <label for="acc-2" class="acc-header">
+            <span>How does this support UN SDG Goal 12?</span>
+            <span>↓</span>
+          </label>
+          <div class="acc-body">
+            By enabling households to easily find creative recipes for expiring ingredients, SustainaBite directly reduces food thrown into landfills.
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>&copy; SustainaBite — Combined Online/Offline Recipe &amp; Spice Hub.</p>
+  </footer>
+
+</body>
+</html>

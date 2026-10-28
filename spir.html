@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SustainaBite - External Google Search & Recipe Discovery</title>
+  <style>
+    /* ==========================================================================
+       1. CORE SYSTEM & COLOR PALETTE (Blue, Red, Green & Spices)
+       ========================================================================== */
+    :root {
+      --bg-dark: #070d18;
+      --bg-card: rgba(13, 23, 42, 0.85);
+      --border-color: rgba(59, 130, 246, 0.25);
+      
+      --blue-main: #2563eb;
+      --blue-glow: rgba(37, 99, 235, 0.4);
+      
+      --red-main: #dc2626;
+      --red-bright: #ef4444;
+      --red-glow: rgba(220, 38, 38, 0.4);
+      
+      --green-main: #16a34a;
+      --green-bright: #22c55e;
+      --green-glow: rgba(34, 197, 94, 0.4);
+      
+      --text-main: #ffffff;
+      --text-sub: #cbd5e1;
+      --text-muted: #64748b;
+      
+      --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.7), 0 0 20px rgba(37, 99, 235, 0.15);
+      --shadow-glow-red: 0 0 25px rgba(239, 68, 68, 0.35);
+      --shadow-glow-green: 0 0 25px rgba(34, 197, 94, 0.35);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-family);
+      line-height: 1.6;
+      overflow-x: hidden;
+      min-height: 100vh;
+      background-image: 
+        linear-gradient(to bottom, rgba(7, 13, 24, 0.88), rgba(7, 13, 24, 0.95)),
+        url('https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=1920&q=80');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .glass-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      box-shadow: var(--shadow-card);
+      transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+
+    .glass-card:hover {
+      border-color: rgba(34, 197, 94, 0.4);
+    }
+
+    .gradient-text-red {
+      background: linear-gradient(135deg, #ffffff 0%, var(--red-bright) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 1rem;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      background: rgba(34, 197, 94, 0.15);
+      color: var(--green-bright);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+
+    /* NAVIGATION BAR */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(7, 13, 24, 0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 80px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text-main);
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(135deg, var(--red-main), var(--green-main));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-glow-red);
+    }
+
+    .logo-icon svg { width: 24px; height: 24px; fill: #ffffff; }
+
+    /* GOOGLE SEARCH FORM SECTION */
+    .search-hero {
+      text-align: center;
+      max-width: 800px;
+      margin: 3rem auto;
+    }
+
+    .search-form {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .search-input {
+      flex-grow: 1;
+      padding: 1.25rem 1.75rem;
+      font-size: 1.1rem;
+      color: var(--text-main);
+      background: rgba(13, 23, 42, 0.9);
+      border: 2px solid var(--border-color);
+      border-radius: 50px;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: var(--green-bright);
+    }
+
+    .search-btn {
+      padding: 1.25rem 2.5rem;
+      border-radius: 50px;
+      background: linear-gradient(135deg, var(--red-main), var(--green-main));
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 1rem;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: var(--shadow-glow-red);
+      transition: transform 0.2s ease;
+    }
+
+    .search-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    /* DIRECT GOOGLE SEARCH CHIPS */
+    .google-chip-grid {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .google-chip {
+      padding: 0.6rem 1.2rem;
+      border-radius: 30px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-color);
+      color: var(--text-sub);
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: all 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .google-chip:hover {
+      background: var(--blue-main);
+      color: #ffffff;
+      border-color: var(--blue-main);
+    }
+
+    /* RECIPE & SPICE CARDS WITH DIRECT GOOGLE LINKS */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .card-item {
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-img {
+      height: 200px;
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .card-body {
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      justify-content: space-between;
+    }
+
+    .card-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .google-link-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.25rem;
+      border-radius: 30px;
+      background: rgba(34, 197, 94, 0.15);
+      color: var(--green-bright);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      font-weight: 600;
+      text-decoration: none;
+      margin-top: 1rem;
+      transition: all 0.25s ease;
+    }
+
+    .google-link-btn:hover {
+      background: var(--green-bright);
+      color: #000000;
+    }
+
+    footer {
+      border-top: 1px solid var(--border-color);
+      background: rgba(5, 10, 20, 0.95);
+      padding: 3rem 0;
+      margin-top: 5rem;
+      text-align: center;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="container nav-container">
+      <a href="#" class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+        </div>
+        <span>Sustaina<span class="gradient-text-red">Bite</span></span>
+      </a>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="search-hero">
+      <div class="badge">UN SDG 12: Zero-Waste Kitchen</div>
+      <h1 style="font-size: 2.8rem; font-weight: 800; margin-top: 1rem;">
+        Search <span class="gradient-text-red">Recipes &amp; Spices</span> on Google
+      </h1>
+      <p style="color: var(--text-sub); margin-top: 0.5rem;">
+        Type an ingredient below. Clicking search will take you directly to Google recipe results in a new tab!
+      </p>
+
+      <!-- PURE HTML FORM THAT TARGETS GOOGLE SEARCH -->
+      <form action="https://www.google.com/search" method="GET" target="_blank" class="search-form">
+        <input type="text" name="q" class="search-input" placeholder="Type ingredients or spices (e.g., spinach recipe, cayenne pepper spice)..." required>
+        <button type="submit" class="search-btn">
+          🔍 Search on Google
+        </button>
+      </form>
+
+      <!-- PRE-CONFIGURED GOOGLE SEARCH CHIPS -->
+      <div class="google-chip-grid">
+        <a href="https://www.google.com/search?q=spinach+leftover+recipes" target="_blank" class="google-chip">🥬 Spinach Recipes ↗</a>
+        <a href="https://www.google.com/search?q=soft+tomato+curry+recipes" target="_blank" class="google-chip">🍅 Soft Tomato Recipes ↗</a>
+        <a href="https://www.google.com/search?q=shredded+chicken+taco+recipes" target="_blank" class="google-chip">🍗 Leftover Chicken ↗</a>
+        <a href="https://www.google.com/search?q=cumin+spice+varieties+and+uses" target="_blank" class="google-chip">🌿 Cumin Spice Uses ↗</a>
+      </div>
+    </div>
+
+    <!-- CARDS WITH DIRECT GOOGLE SEARCH LINKS -->
+    <div class="card-grid">
+      <!-- Card 1 -->
+      <div class="glass-card card-item">
+        <img src="https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80" class="card-img" alt="Salad">
+        <div class="card-body">
+          <div class="card-title">Wilted Spinach & Tomato Salad</div>
+          <p style="color: var(--text-sub); font-size: 0.95rem;">Search Google for different variations of wilted spinach salads.</p>
+          <a href="https://www.google.com/search?q=wilted+spinach+and+tomato+salad+recipe" target="_blank" class="google-link-btn">
+            Search Recipe on Google ↗
+          </a>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="glass-card card-item">
+        <img src="https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=600&q=80" class="card-img" alt="Curry">
+        <div class="card-body">
+          <div class="card-title">Aromatic Cumin & Tomato Curry</div>
+          <p style="color: var(--text-sub); font-size: 0.95rem;">Search Google for different spice blend variations of tomato curry.</p>
+          <a href="https://www.google.com/search?q=cumin+and+tomato+curry+recipe" target="_blank" class="google-link-btn">
+            Search Recipe on Google ↗
+          </a>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="glass-card card-item">
+        <img src="https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=600&q=80" class="card-img" alt="Spices">
+        <div class="card-body">
+          <div class="card-title">Varieties of Cooking Spices</div>
+          <p style="color: var(--text-sub); font-size: 0.95rem;">Explore Google for exotic spice varieties and flavor pairings.</p>
+          <a href="https://www.google.com/search?q=cooking+spice+varieties+and+zero+waste+uses" target="_blank" class="google-link-btn">
+            Search Spices on Google ↗
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; SustainaBite — HTML &amp; CSS Google Search Integration Project.</p>
+  </footer>
+
+</body>
+</html>

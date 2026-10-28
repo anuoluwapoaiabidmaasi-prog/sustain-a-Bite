@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SustainaBite - Interactive Search & Recipe Catalog</title>
+  <style>
+    /* ==========================================================================
+       1. CORE DESIGN SYSTEM & COLOR PALETTE (Blue, Red, Green & Spices)
+       ========================================================================== */
+    :root {
+      --bg-dark: #070d18;
+      --bg-card: rgba(13, 23, 42, 0.85);
+      --bg-card-hover: rgba(22, 38, 70, 0.9);
+      --border-color: rgba(59, 130, 246, 0.25);
+      
+      --blue-main: #2563eb;
+      --blue-glow: rgba(37, 99, 235, 0.4);
+      
+      --red-main: #dc2626;
+      --red-bright: #ef4444;
+      --red-glow: rgba(220, 38, 38, 0.4);
+      
+      --green-main: #16a34a;
+      --green-bright: #22c55e;
+      --green-glow: rgba(34, 197, 94, 0.4);
+      
+      --text-main: #ffffff;
+      --text-sub: #cbd5e1;
+      --text-muted: #64748b;
+      
+      --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      --transition-normal: 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      
+      --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.7), 0 0 20px rgba(37, 99, 235, 0.15);
+      --shadow-glow-red: 0 0 25px rgba(239, 68, 68, 0.35);
+      --shadow-glow-green: 0 0 25px rgba(34, 197, 94, 0.35);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-family);
+      line-height: 1.6;
+      overflow-x: hidden;
+      min-height: 100vh;
+      background-image: 
+        linear-gradient(to bottom, rgba(7, 13, 24, 0.88), rgba(7, 13, 24, 0.95)),
+        url('https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=1920&q=80');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+
+    /* Animated background ambient glow */
+    .bg-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      z-index: -1;
+      pointer-events: none;
+      animation: floatOrb 12s infinite alternate ease-in-out;
+    }
+
+    .bg-orb-1 { top: 10%; left: 5%; width: 320px; height: 320px; background: var(--red-main); opacity: 0.22; }
+    .bg-orb-2 { bottom: 10%; right: 5%; width: 380px; height: 380px; background: var(--green-main); opacity: 0.22; animation-delay: -6s; }
+
+    @keyframes floatOrb {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(30px, 45px) scale(1.15); }
+    }
+
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .glass-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      box-shadow: var(--shadow-card);
+      transition: transform var(--transition-normal), border-color var(--transition-normal), box-shadow var(--transition-normal);
+    }
+
+    .glass-card:hover {
+      border-color: rgba(34, 197, 94, 0.4);
+      box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.8), var(--shadow-glow-green);
+    }
+
+    .gradient-text-red {
+      background: linear-gradient(135deg, #ffffff 0%, var(--red-bright) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .gradient-text-green {
+      background: linear-gradient(135deg, #ffffff 0%, var(--green-bright) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 1rem;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: rgba(34, 197, 94, 0.15);
+      color: var(--green-bright);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+
+    /* ==========================================================================
+       2. PURE CSS ROUTING & STATE ENGINE
+       ========================================================================== */
+    input[name="page-route"],
+    input[name="search-filter"],
+    input[name="cat-filter"] {
+      display: none;
+    }
+
+    /* ==========================================================================
+       3. NAVIGATION BAR
+       ========================================================================== */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(7, 13, 24, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 80px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text-main);
+      cursor: pointer;
+    }
+
+    .logo-icon {
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(135deg, var(--red-main), var(--green-main));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-glow-red);
+    }
+
+    .logo-icon svg { width: 24px; height: 24px; fill: #ffffff; }
+
+    .nav-links {
+      display: flex;
+      gap: 0.5rem;
+      background: rgba(13, 23, 42, 0.6);
+      padding: 0.35rem;
+      border-radius: 50px;
+      border: 1px solid var(--border-color);
+    }
+
+    .nav-btn {
+      padding: 0.60rem 1.4rem;
+      border-radius: 40px;
+      color: var(--text-sub);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      user-select: none;
+    }
+
+    .nav-btn:hover { color: var(--text-main); background: rgba(255, 255, 255, 0.05); }
+
+    /* Active route button styles */
+    #nav-search:checked ~ header .nav-links label[for="nav-search"],
+    #nav-catalog:checked ~ header .nav-links label[for="nav-catalog"],
+    #nav-spices:checked ~ header .nav-links label[for="nav-spices"],
+    #nav-about:checked ~ header .nav-links label[for="nav-about"] {
+      background: linear-gradient(135deg, var(--red-main), var(--blue-main));
+      color: var(--text-main);
+      box-shadow: var(--shadow-glow-red);
+    }
+
+    /* Page View Visibility */
+    .page-section {
+      display: none;
+      padding: 3rem 0 5rem 0;
+      animation: fadeIn 0.4s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    #nav-search:checked ~ main #section-search { display: block; }
+    #nav-catalog:checked ~ main #section-catalog { display: block; }
+    #nav-spices:checked ~ main #section-spices { display: block; }
+    #nav-about:checked ~ main #section-about { display: block; }
+
+    /* ==========================================================================
+       4. INTERACTIVE SEARCH BAR SECTION (PURE CSS)
+       ========================================================================== */
+    .search-hero {
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto 3.5rem auto;
+    }
+
+    .search-box-wrapper {
+      position: relative;
+      margin-top: 2rem;
+    }
+
+    .search-bar {
+      width: 100%;
+      padding: 1.25rem 1.75rem 1.25rem 3.5rem;
+      font-size: 1.1rem;
+      color: var(--text-main);
+      background: rgba(13, 23, 42, 0.9);
+      border: 2px solid var(--border-color);
+      border-radius: 50px;
+      outline: none;
+      box-shadow: var(--shadow-card);
+      transition: all 0.3s ease;
+    }
+
+    .search-bar:focus {
+      border-color: var(--green-bright);
+      box-shadow: var(--shadow-glow-green);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 1.25rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 22px;
+      height: 22px;
+      stroke: var(--text-sub);
+      pointer-events: none;
+    }
+
+    /* Filter Chips linked to CSS state */
+    .quick-filter-chips {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-top: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    .chip-btn {
+      padding: 0.5rem 1.25rem;
+      border-radius: 30px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      color: var(--text-sub);
+      font-size: 0.9rem;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.25s ease;
+    }
+
+    /* Pure CSS Quick Chip Checked Styling */
+    #filter-all:checked ~ main .quick-filter-chips label[for="filter-all"],
+    #filter-spinach:checked ~ main .quick-filter-chips label[for="filter-spinach"],
+    #filter-tomato:checked ~ main .quick-filter-chips label[for="filter-tomato"],
+    #filter-chicken:checked ~ main .quick-filter-chips label[for="filter-chicken"],
+    #filter-cumin:checked ~ main .quick-filter-chips label[for="filter-cumin"] {
+      background: var(--red-main);
+      color: #ffffff;
+      border-color: var(--red-bright);
+      box-shadow: var(--shadow-glow-red);
+    }
+
+    /* Search Filtering Engine using CSS :has() */
+    #filter-spinach:checked ~ main .searchable-grid .search-item:not([data-tags*="spinach"]),
+    #filter-tomato:checked ~ main .searchable-grid .search-item:not([data-tags*="tomato"]),
+    #filter-chicken:checked ~ main .searchable-grid .search-item:not([data-tags*="chicken"]),
+    #filter-cumin:checked ~ main .searchable-grid .search-item:not([data-tags*="cumin"]) {
+      display: none;
+    }
+
+    /* ==========================================================================
+       5. GRID LAYOUT & CARDS
+       ========================================================================== */
+    .searchable-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 2rem;
+    }
+
+    .search-item {
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .item-img {
+      height: 200px;
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .item-body {
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      justify-content: space-between;
+    }
+
+    .item-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .item-desc {
+      color: var(--text-sub);
+      font-size: 0.95rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .item-tags {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+    }
+
+    .tag-recipe { background: rgba(34, 197, 94, 0.2); color: var(--green-bright); }
+    .tag-spice { background: rgba(239, 68, 68, 0.2); color: var(--red-bright); }
+
+    /* ==========================================================================
+       6. SPICE VARIETIES CATALOG
+       ========================================================================== */
+    .spices-hero {
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto 3rem auto;
+    }
+
+    .spices-card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+
+    .spice-card {
+      padding: 2.25rem;
+      text-align: center;
+    }
+
+    .spice-avatar {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 1.25rem auto;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid var(--red-main);
+      box-shadow: var(--shadow-glow-red);
+    }
+
+    /* ==========================================================================
+       7. ABOUT & SDG 12 SECTION
+       ========================================================================== */
+    .about-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+      margin-bottom: 4rem;
+    }
+
+    .sdg-card {
+      padding: 2.5rem;
+      border-left: 5px solid var(--red-main);
+      background: rgba(220, 38, 38, 0.08);
+    }
+
+    .sdg-big-num {
+      font-size: 4rem;
+      font-weight: 900;
+      color: var(--red-bright);
+      line-height: 1;
+    }
+
+    /* ==========================================================================
+       8. FOOTER
+       ========================================================================== */
+    footer {
+      border-top: 1px solid var(--border-color);
+      background: rgba(5, 10, 20, 0.95);
+      padding: 4rem 0 2rem 0;
+      margin-top: 5rem;
+    }
+
+    .footer-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 2rem;
+    }
+
+    @media (max-width: 992px) {
+      .about-split { grid-template-columns: 1fr; text-align: center; }
+      .nav-container { flex-direction: column; height: auto; padding: 1rem 0; gap: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-orb bg-orb-1"></div>
+  <div class="bg-orb bg-orb-2"></div>
+
+  <!-- Pure CSS Router Radio Inputs -->
+  <input type="radio" id="nav-search" name="page-route" checked>
+  <input type="radio" id="nav-catalog" name="page-route">
+  <input type="radio" id="nav-spices" name="page-route">
+  <input type="radio" id="nav-about" name="page-route">
+
+  <!-- Search Filter Radio Inputs -->
+  <input type="radio" id="filter-all" name="search-filter" checked>
+  <input type="radio" id="filter-spinach" name="search-filter">
+  <input type="radio" id="filter-tomato" name="search-filter">
+  <input type="radio" id="filter-chicken" name="search-filter">
+  <input type="radio" id="filter-cumin" name="search-filter">
+
+  <!-- HEADER -->
+  <header>
+    <div class="container nav-container">
+      <label for="nav-search" class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+        </div>
+        <span>Sustaina<span class="gradient-text-red">Bite</span></span>
+      </label>
+
+      <nav class="nav-links">
+        <label for="nav-search" class="nav-btn">Search &amp; Matcher</label>
+        <label for="nav-catalog" class="nav-btn">Recipe Catalog</label>
+        <label for="nav-spices" class="nav-btn">Spice Varieties</label>
+        <label for="nav-about" class="nav-btn">SDG 12 Impact</label>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="container">
+
+    <!-- ----------------------------------------------------------------------
+       SECTION 1: SEARCH & INGREDIENT MATCHER
+       ---------------------------------------------------------------------- -->
+    <section id="section-search" class="page-section">
+      <div class="search-hero">
+        <div class="badge" style="margin-bottom: 1.25rem;">UN SDG 12: Zero-Waste Kitchen</div>
+        <h1 style="font-size: 3rem; font-weight: 800; line-height: 1.2;">
+          Find <span class="gradient-text-red">Recipes &amp; Spices</span> for Your Expiring Leftovers
+        </h1>
+        <p style="color: var(--text-sub); font-size: 1.15rem; margin-top: 1rem;">
+          Type or choose an ingredient below to filter delicious meals and spice combinations!
+        </p>
+
+        <!-- Interactive Search Input & Quick Filters -->
+        <div class="search-box-wrapper">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <input type="text" class="search-bar" placeholder="Search by ingredient (e.g., spinach, tomato, chicken, cumin)...">
+        </div>
+
+        <div class="quick-filter-chips">
+          <label for="filter-all" class="chip-btn">All Items</label>
+          <label for="filter-spinach" class="chip-btn">🥬 Spinach</label>
+          <label for="filter-tomato" class="chip-btn">🍅 Tomato</label>
+          <label for="filter-chicken" class="chip-btn">🍗 Chicken</label>
+          <label for="filter-cumin" class="chip-btn">🌿 Cumin Spice</label>
+        </div>
+      </div>
+
+      <!-- Searchable Item Cards Grid -->
+      <div class="searchable-grid">
+        
+        <!-- Item 1 -->
+        <div class="glass-card search-item" data-tags="spinach tomato recipe">
+          <img src="https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80" class="item-img" alt="Salad">
+          <div class="item-body">
+            <div>
+              <div class="item-tags">
+                <span class="tag tag-recipe">Recipe</span>
+                <span class="tag" style="background: rgba(59, 130, 246, 0.2); color: #3b82f6;">Spinach</span>
+              </div>
+              <h3 class="item-title">Wilted Spinach & Tomato Bowl</h3>
+              <p class="item-desc">Revive soft spinach leaves and tomatoes into a warm spiced grain bowl.</p>
+            </div>
+            <div style="color: var(--green-bright); font-size: 0.85rem; font-weight: 700;">Saves 400g Food Waste</div>
+          </div>
+        </div>
+
+        <!-- Item 2 -->
+        <div class="glass-card search-item" data-tags="tomato cumin spice recipe">
+          <img src="https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=600&q=80" class="item-img" alt="Curry">
+          <div class="item-body">
+            <div>
+              <div class="item-tags">
+                <span class="tag tag-spice">Spice Blend</span>
+                <span class="tag" style="background: rgba(234, 179, 8, 0.2); color: #eab308;">Cumin</span>
+              </div>
+              <h3 class="item-title">Aromatic Cumin & Tomato Stew</h3>
+              <p class="item-desc">Infuse overripe tomatoes with whole cumin seeds for a fragrant curry.</p>
+            </div>
+            <div style="color: var(--green-bright); font-size: 0.85rem; font-weight: 700;">Saves 550g Food Waste</div>
+          </div>
+        </div>
+
+        <!-- Item 3 -->
+        <div class="glass-card search-item" data-tags="chicken cumin recipe">
+          <img src="https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=600&q=80" class="item-img" alt="Tacos">
+          <div class="item-body">
+            <div>
+              <div class="item-tags">
+                <span class="tag tag-recipe">Recipe</span>
+                <span class="tag" style="background: rgba(168, 85, 247, 0.2); color: #a855f7;">Chicken</span>
+              </div>
+              <h3 class="item-title">Shredded Chicken Cumin Tacos</h3>
+              <p class="item-desc">Transform leftover roasted chicken into crispy spiced tacos in 15 minutes.</p>
+            </div>
+            <div style="color: var(--green-bright); font-size: 0.85rem; font-weight: 700;">Saves 350g Food Waste</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------------------------
+       SECTION 2: FULL CATALOGUE
+       ---------------------------------------------------------------------- -->
+    <section id="section-catalog" class="page-section">
+      <div style="text-align: center; margin-bottom: 3rem;">
+        <h2 style="font-size: 2.5rem; font-weight: 800;">Full Recipe Directory</h2>
+        <p style="color: var(--text-sub);">Explore all curated leftover recipes.</p>
+      </div>
+
+      <div class="searchable-grid">
+        <div class="glass-card search-item">
+          <img src="https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80" class="item-img" alt="Food">
+          <div class="item-body">
+            <h3 class="item-title">Herb-Garlic Stale Bread Croutons</h3>
+            <p class="item-desc">Bake day-old bread with garlic and paprika for salad toppings.</p>
+          </div>
+        </div>
+
+        <div class="glass-card search-item">
+          <img src="https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=600&q=80" class="item-img" alt="Food">
+          <div class="item-body">
+            <h3 class="item-title">Spiced Lentil & Veggie Mash</h3>
+            <p class="item-desc">Simmer leftover root vegetables into a thick nutritious soup.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------------------------
+       SECTION 3: SPICE VARIETIES
+       ---------------------------------------------------------------------- -->
+    <section id="section-spices" class="page-section">
+      <div class="spices-hero">
+        <h2 style="font-size: 2.5rem; font-weight: 800;">Varieties of Spices</h2>
+        <p style="color: var(--text-sub);">Spices preserve ingredients, eliminate blandness, and elevate leftover food.</p>
+      </div>
+
+      <div class="spices-card-grid">
+        <div class="glass-card spice-card">
+          <div class="spice-avatar">🌶️</div>
+          <h3>Cayenne &amp; Chili</h3>
+          <p style="color: var(--text-sub); font-size: 0.9rem; margin-top: 0.5rem;">Adds heat and extends shelf life in leftover meat marinades.</p>
+        </div>
+
+        <div class="glass-card spice-card">
+          <div class="spice-avatar" style="border-color: var(--green-bright);">🌿</div>
+          <h3>Cumin &amp; Coriander</h3>
+          <p style="color: var(--text-sub); font-size: 0.9rem; margin-top: 0.5rem;">Earthy seeds that transform wilted greens into fragrant side dishes.</p>
+        </div>
+
+        <div class="glass-card spice-card">
+          <div class="spice-avatar" style="border-color: var(--blue-main);">🧄</div>
+          <h3>Garlic &amp; Paprika</h3>
+          <p style="color: var(--text-sub); font-size: 0.9rem; margin-top: 0.5rem;">Savory essential base for reviving leftover vegetables.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------------------------
+       SECTION 4: ABOUT SDG 12
+       ---------------------------------------------------------------------- -->
+    <section id="section-about" class="page-section">
+      <div class="about-split">
+        <div>
+          <div class="badge" style="margin-bottom: 1rem;">UN SDG 12 Target</div>
+          <h2 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem;">Responsible Consumption</h2>
+          <p style="color: var(--text-sub); margin-bottom: 1rem;">
+            Target 12.3 aims to halve global household food waste by 2030.
+          </p>
+          <p style="color: var(--text-sub);">
+            SustainaBite connects consumers with quick, accessible recipes to make the most of every ingredient in their kitchen.
+          </p>
+        </div>
+
+        <div class="glass-card sdg-card">
+          <div class="sdg-big-num">12</div>
+          <h3 style="margin: 0.5rem 0 1rem 0;">Responsible Production &amp; Consumption</h3>
+          <p style="color: var(--text-sub); font-size: 0.95rem;">
+            Ensure sustainable consumption through interactive search and ingredient matching.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container footer-flex">
+      <div>
+        <div class="logo" style="margin-bottom: 0.5rem;">
+          <div class="logo-icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg></div>
+          <span>Sustaina<span class="gradient-text-red">Bite</span></span>
+        </div>
+        <p style="color: var(--text-sub); font-size: 0.9rem;">Building zero-waste kitchens aligned with UN SDG Goal 12.</p>
+      </div>
+      <div style="color: var(--text-muted); font-size: 0.85rem;">
+        &copy; SustainaBite — HTML &amp; CSS Web Search Application.
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
