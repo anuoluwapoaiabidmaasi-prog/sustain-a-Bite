@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SustainaBite - Step-by-Step Video Recipes</title>
+  <link rel="stylesheet" href="videos.css">
+</head>
+<body>
+
+  <!-- Background Layer -->
+  <div class="bg-overlay"></div>
+
+  <!-- Main Header -->
+  <header class="site-header">
+    <div class="header-container">
+      <div class="logo">
+        <!-- <span class="logo-icon">" alt=""></span> -->
+        <span class="logo-text">Sustain a Bite</span>
+      </div>
+      <div class="app">
+        <a href="index.html">Home</a>
+      </div>
+
+      <!-- Google Video Search Form -->
+      <form action="https://www.google.com/search" method="get" target="_blank" class="search-form">
+        <input type="hidden" name="tbm" value="vid">
+        <input type="text" name="q" placeholder="Search video recipes on Google..." class="search-input" required>
+        <button type="submit" class="search-button">Search Videos</button>
+      </form>
+    </div>
+  </header>
+
+  <!-- Navigation / Step Controller Container -->
+  <main class="content-wrapper">
+    
+    <!-- CSS Radio Button Controllers for Navigation -->
+    <input type="radio" id="step1-tab" name="recipe-step" class="tab-radio" checked>
+    <input type="radio" id="step2-tab" name="recipe-step" class="tab-radio">
+    <input type="radio" id="step3-tab" name="recipe-step" class="tab-radio">
+
+    <!-- Navigation Bar -->
+    <nav class="step-nav">
+      <label for="step1-tab" class="nav-label">Step 1: Preparation</label>
+      <label for="step2-tab" class="nav-label">Step 2: Cooking</label>
+      <label for="step3-tab" class="nav-label">Step 3: Plating</label>
+    </nav>
+
+    <!-- Recipe Step 1 Section -->
+    <section class="step-content step-1">
+      <h2>Step 1: Prep Fresh Vegetables & Produce</h2>
+      <p>Wash, peel, and slice your tomatoes, leafy greens, and fresh herbs thoroughly before starting.</p>
+      
+      <div class="video-container">
+        <iframe width="750" height="450" src="https://www.youtube.com/embed/07SzMOhP0WE?si=W9gftxmd3-kiO8S1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      </div>
+    </section>
+
+    <!-- Recipe Step 2 Section -->
+    <section class="step-content step-2">
+      <h2>Step 2: Sauté/Pan-fry & Simmer</h2>
+      <p>Combine ingredients over medium heat, bringing out the vibrant natural flavors of your vegetables.</p>
+      
+      <div class="video-container">
+        <video controls poster="assets/images/step2-thumb.jpg">
+          <!-- Primary Online Source -->
+          <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4" type="video/mp4">
+          <!-- Local Offline Fallback Source -->
+          <source src="assets/videos/step2-cook.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    </section>
+
+    <!-- Recipe Step 3 Section -->
+    <section class="step-content step-3">
+      <h2>Step 3: Garnish & Serve</h2>
+      <p>Plate your sustainable meal with freshly diced tomatoes, basil leaves, and a light drizzle of olive oil.</p>
+      
+      <div class="video-container">
+        <video controls poster="assets/images/step3-thumb.jpg">
+          <!-- Primary Online Source -->
+          <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4" type="video/mp4">
+          <!-- Local Offline Fallback Source -->
+          <source src="assets/videos/step3-plate.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    </section>
+
+  </main>
+
+</body>
+</html>

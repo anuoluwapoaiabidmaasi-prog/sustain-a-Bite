@@ -1,0 +1,194 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  color: #2e3d29;
+  background-color: #f7f9f5;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Low-Opacity Kitchen Background (Vegetables, Fruits, Tomatoes) */
+.bg-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=1920&q=80');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.15;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Header & Google Search Bar */
+.site-header {
+  background-color: #ffffff;
+  border-bottom: 2px solid #e1e8dc;
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.header-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #22c55e;
+}
+.app{
+  background-color: #22c55e;
+  border: none;
+  padding: 0.5rem 1.2rem;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+.app a{
+  text-decoration: none;
+  color: white;
+}
+
+.search-form {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.search-input {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  outline: none;
+  width: 260px;
+  transition: border-color 0.2s;
+}
+
+.search-input:focus {
+  border-color: #22c55e;
+}
+
+.search-button {
+  background-color: #22c55e;
+  color: white;
+  border: none;
+  padding: 0.5rem 1.2rem;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.search-button:hover {
+  background-color: #22c55e;
+}
+
+/* Main Content Layout */
+.content-wrapper {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+.spot{
+  color: red;
+}
+
+/* Hide Radio Buttons */
+.tab-radio {
+  display: none;
+}
+
+/* Step Navigation Bar */
+.step-nav {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #ccc;
+}
+
+.nav-label {
+  flex: 1;
+  text-align: center;
+  padding: 0.75rem;
+  background-color: #e8f5e9;
+  color: #22c55e;
+  font-weight: bold;
+  border-radius: 8px 8px 0 0;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.nav-label:hover {
+  background-color: #c8e6c9;
+}
+
+/* Step Content Sections */
+.step-content {
+  display: none;
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.step-content h2 {
+  margin-bottom: 0.5rem;
+  color: #22c55a;
+}
+
+.step-content p {
+  margin-bottom: 1.2rem;
+  line-height: 1.5;
+  color: #555;
+}
+
+/* Responsive 16:9 Video Container */
+.video-container {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  height: 0;
+  background-color: #000;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.video-container video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Pure CSS Tab Switching via Sibling Selectors */
+#step1-tab:checked ~ .step-nav label[for="step1-tab"],
+#step2-tab:checked ~ .step-nav label[for="step2-tab"],
+#step3-tab:checked ~ .step-nav label[for="step3-tab"] {
+  background-color: #22c55e;
+  color: white;
+}
+
+#step1-tab:checked ~ .step-1,
+#step2-tab:checked ~ .step-2,
+#step3-tab:checked ~ .step-3 {
+  display: block;
+}
