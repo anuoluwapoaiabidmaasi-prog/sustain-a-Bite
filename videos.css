@@ -191,4 +191,5 @@ body {
 #step2-tab:checked ~ .step-2,
 #step3-tab:checked ~ .step-3 {
   display: block;
+
 }
